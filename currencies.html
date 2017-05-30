@@ -1,0 +1,142 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Crypto portfolio</title>
+
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+
+        <script type="text/javascript" src="https://static.cryptowat.ch/assets/scripts/embed.bundle.js"></script>
+
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous">
+    </head>
+    <body>
+        <!--
+        <script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script>
+        <div class="coinmarketcap-currency-widget" data-currency="ripple" data-base="EUR" data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true" data-volume="true" data-stats="EUR" data-statsticker="false"></div>
+
+        <div class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="EUR" data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true" data-volume="true" data-stats="EUR" data-statsticker="false"></div>
+
+        <div class="coinmarketcap-currency-widget" data-currency="bitcoin" data-base="EUR" data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true" data-volume="true" data-stats="EUR" data-statsticker="false"></div>
+        -->
+        <div class="container">
+            <div id="ethereum"></div>
+            <div id="ripple"></div>
+            <div id="bitcoin"></div>
+            <br>
+            <div id="totalEarning"></div>
+            <br>
+            <div id="chart-container"></div>
+        </div>
+
+        <style>
+        .line-32 {
+            line-height: 32px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        </style>
+
+        <script>
+            var chart = new cryptowatch.Embed('coinbase', 'ethusd', {
+                timePeriod: '1H',
+                presetColorScheme: 'ballmer',
+                /*customColorScheme: {
+                    bg:           "000000",
+                    text:         "b2b2b2",
+                    textStrong:   "e5e5e5", // Emphasized text
+                    textWeak:     "7f7f7f", // De-emphasized text
+                    short:        "C60606", // Stroke color of decreasing candlesticks, ask orders, and other "short" related UI
+                    shortFill:    "C60606", // Fill color of decreasing candlesticks
+                    long:         "00B909", // Color of increasing candlesticks, bid orders, and other "long" related UI
+                    longFill:     "000000", // Fill color of increasing candlesticks
+                    cta:          "363D52", // Color of buttons and other prominent UI elements
+                    ctaHighlight: "414A67", // Color of buttons and other prominent UI elements when hovered over
+                    alert:        "FFD506", // Color associated with price & volume alerts
+                }*/
+            });
+
+            chart.mount('#chart-container');
+
+            var totalEarning = 0;
+            var totalWallet = 0;
+
+            // Refresh every 30 sec
+            updatePersonnalDashboard();
+            var t = setInterval(updatePersonnalDashboard, 30000);
+
+            function updatePersonnalDashboard() {
+                totalEarning = 0;
+                totalWallet = 0;
+                
+                  
+                /*displayCurrency('bitcoin', 0.0093, 2000);
+                displayCurrency('ethereum', 7.22, 129);
+                displayCurrency('ripple', 280, 0.21428571428);*/
+
+                displayCurrency('ethereum', 1.88, 174.759264181);
+                displayCurrency('bitcoin', 0.07594672, 2207);
+                displayCurrency('ripple', 1, 1)
+            }
+
+            function displayCurrency(currency, amount, boughtPrice) {
+                return $.get(`https://api.coinmarketcap.com/v1/ticker/${currency}/?convert=EUR`)
+                .done(function(data) {
+                    computeDisplay(data[0], currency, amount, boughtPrice);
+                });
+            }
+
+            function computeDisplay(data, currency, amount, boughtPrice) {
+                data.percent_change_1h;
+                data.percent_change_24h;
+                data.percent_change_7d;
+                data.price_eur;
+
+                var eurEarned = amount * data.price_eur - amount * boughtPrice;
+                var eurWallet = amount * data.price_eur;
+                totalEarning += eurEarned;
+                totalWallet += eurWallet;
+                $(`#totalEarning`).html(`<div><b>[Total]</b> Wallet: ${totalWallet.toFixed(2)}€ - Earned: ${totalEarning.toFixed(2)}€</div>`)
+                $(`#${data.id}`).html(getFormattedEntry(`https://files.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`,
+                                                        data.name,
+                                                        Number(data.price_usd).toFixed(2),
+                                                        eurWallet.toFixed(2),
+                                                        eurEarned.toFixed(2),
+                                                        data.percent_change_7d,
+                                                        data.percent_change_24h,
+                                                        data.percent_change_1h));
+            }
+
+            function getFormattedEntry(imgUrl, name, price, wallet, earned, percentageChange7d, percentageChange24h, percentageChange1h) {
+                return `
+<div class="row line-32">
+    <div class="col-xs-1"><img height="32px" src="${imgUrl}"></img></div>
+    <div class="col-xs-5"><b>[${name}: ${price}$]</b> Wallet: ${wallet}€ - Earned: ${earned}€</div>
+    <div class="col-xs-6">(7j: ${getPercentageHtml(percentageChange7d)}, 24h: ${getPercentageHtml(percentageChange24h)}, 1h: ${getPercentageHtml(percentageChange1h)})</div>
+</div>`
+            }
+
+            function getPercentageHtml(percentage) {
+                const risingColor = "green";
+                const droppingColor = "red";
+                var color;
+                if (percentage >= 0)
+                    color = risingColor;
+                else
+                    color = droppingColor;
+
+                return `<label style="color: ${color}">${percentage}%</label>`
+            }
+
+        </script>
+    </body>
+</html>
