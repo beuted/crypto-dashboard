@@ -95,7 +95,7 @@
 
             // Refresh every 30 sec
             updatePersonnalDashboard(...foundCurrencies);
-            var t = setInterval(() => updatePersonnalDashboard(bitcoin, ethereum, ripple), 30000);
+            var t = setInterval(() => updatePersonnalDashboard(...foundCurrencies), 30000);
 
             function updatePersonnalDashboard(...assets) {
                 totalEarning = 0;
