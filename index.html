@@ -32,8 +32,7 @@
             <div id="ethereum"></div>
             <div id="ripple"></div>
             <div id="bitcoin"></div>
-            <br>
-            <div id="totalEarning"></div>
+            <div class="total" id="totalEarning"></div>
             <br>
             <div id="chart-container"></div>
         </div>
@@ -47,6 +46,10 @@
             padding-bottom: 5px;
             border: 1px solid lightgray;
             border-radius: 3px;
+        }
+
+        .total>div {
+            background-color:lightsteelblue;
         }
         </style>
 
@@ -123,7 +126,12 @@
                 var eurWallet = amount * data.price_eur;
                 totalEarning += eurEarned;
                 totalWallet += eurWallet;
-                $(`#totalEarning`).html(`<div><b>[Total]</b> Wallet: ${totalWallet.toFixed(2)}€ - Earned: ${totalEarning.toFixed(2)}€</div>`)
+                $(`#totalEarning`).html(`
+<div class="row line-32">
+    <div class="col-xs-1"></div>
+    <div class="col-xs-5"><b>[Total]</b> Wallet: ${getAmountHtml(totalWallet.toFixed(2), "€")} - Earned: ${getAmountHtml(totalEarning.toFixed(2), "€")}</div>
+    <div class="col-xs-6"></div>
+</div>`);
                 $(`#${data.id}`).html(getFormattedEntry(`https://files.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`,
                                                         data.name,
                                                         Number(data.price_usd).toFixed(2),
