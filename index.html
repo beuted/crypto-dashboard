@@ -69,27 +69,41 @@
                 }*/
             });
 
+            // ======
+            // Benoit
+            // index.html?bitcoin={%22id%22:%22bitcoin%22,%22boughtPrice%22:2000,%22quantity%22:0.0093}&ethereum={%22id%22:%22ethereum%22,%22boughtPrice%22:129,%22quantity%22:7.22%20}&ripple={%22id%22:%22ripple%22,%22boughtPrice%22:0.21428571428,%22quantity%22:280}
+            // ======
+
+            // ======
+            // Nico
+            // index.html?bitcoin={%22id%22:%22bitcoin%22,%22boughtPrice%22:2207,%22quantity%22:0.07594672}&ethereum={%22id%22:%22ethereum%22,%22boughtPrice%22:174.7,%22quantity%22:1.88%20}&ripple={%22id%22:%22ripple%22,%22boughtPrice%22:0.21428571428,%22quantity%22:0}
+            // ======
             chart.mount('#chart-container');
 
             var totalEarning = 0;
             var totalWallet = 0;
 
-            // Refresh every 30 sec
-            updatePersonnalDashboard();
-            var t = setInterval(updatePersonnalDashboard, 30000);
 
-            function updatePersonnalDashboard() {
+            var supportedCurrencies = ["bitcoin", "ethereum", "ripple"];
+            var foundCurrencies = [];
+
+            supportedCurrencies.forEach((currName) => {
+                var currencyUrlParam = getUrlParameter(currName);
+                if (currencyUrlParam)
+                    foundCurrencies.push(JSON.parse(currencyUrlParam));
+            });        
+
+            // Refresh every 30 sec
+            updatePersonnalDashboard(...foundCurrencies);
+            var t = setInterval(() => updatePersonnalDashboard(bitcoin, ethereum, ripple), 30000);
+
+            function updatePersonnalDashboard(...assets) {
                 totalEarning = 0;
                 totalWallet = 0;
-                
-                  
-                displayCurrency('bitcoin', 0.0093, 2000);
-                displayCurrency('ethereum', 7.22, 129);
-                displayCurrency('ripple', 280, 0.21428571428);
 
-                /*displayCurrency('ethereum', 1.88, 174.759264181);
-                displayCurrency('bitcoin', 0.07594672, 2207);
-                displayCurrency('ripple', 1, 1)*/
+                assets.forEach((asset) => {
+                    displayCurrency(asset.id, asset.quantity, asset.boughtPrice);
+                });
             }
 
             function displayCurrency(currency, amount, boughtPrice) {
@@ -140,6 +154,21 @@
 
                 return `<label style="color: ${color}">${percentage}${symbole}</label>`
             }
+
+            function getUrlParameter(sParam) {
+                var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                    sURLVariables = sPageURL.split('&'),
+                    sParameterName,
+                    i;
+
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : sParameterName[1];
+                    }
+                }
+            };
 
         </script>
     </body>
