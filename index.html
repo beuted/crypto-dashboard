@@ -40,9 +40,13 @@
 
         <style>
         .line-32 {
-            line-height: 32px;
+            line-height: 30px;
             margin-top: 10px;
             margin-bottom: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border: 1px solid lightgray;
+            border-radius: 3px;
         }
         </style>
 
@@ -79,13 +83,13 @@
                 totalWallet = 0;
                 
                   
-                /*displayCurrency('bitcoin', 0.0093, 2000);
+                displayCurrency('bitcoin', 0.0093, 2000);
                 displayCurrency('ethereum', 7.22, 129);
-                displayCurrency('ripple', 280, 0.21428571428);*/
+                displayCurrency('ripple', 280, 0.21428571428);
 
-                displayCurrency('ethereum', 1.88, 174.759264181);
+                /*displayCurrency('ethereum', 1.88, 174.759264181);
                 displayCurrency('bitcoin', 0.07594672, 2207);
-                displayCurrency('ripple', 1, 1)
+                displayCurrency('ripple', 1, 1)*/
             }
 
             function displayCurrency(currency, amount, boughtPrice) {
@@ -120,12 +124,12 @@
                 return `
 <div class="row line-32">
     <div class="col-xs-1"><img height="32px" src="${imgUrl}"></img></div>
-    <div class="col-xs-5"><b>[${name}: ${price}$]</b> Wallet: ${wallet}€ - Earned: ${earned}€</div>
-    <div class="col-xs-6">(7j: ${getPercentageHtml(percentageChange7d)}, 24h: ${getPercentageHtml(percentageChange24h)}, 1h: ${getPercentageHtml(percentageChange1h)})</div>
+    <div class="col-xs-5"><b>[${name}: ${price}$]</b> Wallet: ${getAmountHtml(wallet, "€")} - Earned: ${getAmountHtml(earned, "€")}</div>
+    <div class="col-xs-6">(7j: ${getAmountHtml(percentageChange7d, "%")}, 24h: ${getAmountHtml(percentageChange24h, "%")}, 1h: ${getAmountHtml(percentageChange1h, "%")})</div>
 </div>`
             }
 
-            function getPercentageHtml(percentage) {
+            function getAmountHtml(percentage, symbole) {
                 const risingColor = "green";
                 const droppingColor = "red";
                 var color;
@@ -134,7 +138,7 @@
                 else
                     color = droppingColor;
 
-                return `<label style="color: ${color}">${percentage}%</label>`
+                return `<label style="color: ${color}">${percentage}${symbole}</label>`
             }
 
         </script>
