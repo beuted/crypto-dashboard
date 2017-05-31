@@ -126,12 +126,11 @@
                 var eurWallet = amount * data.price_eur;
                 totalEarning += eurEarned;
                 totalWallet += eurWallet;
-                var percentageIncrease = ((totalEarning/moneyInvested)*100).toFixed(2);
 
                 $(`#totalEarning`).html(`
 <div class="row line-32">
     <div class="col-xs-1"></div>
-    <div class="col-xs-5"><b>[Total]</b> Wallet: ${getAmountHtml(totalWallet.toFixed(2), "€")} - Earned: ${getAmountHtml(totalEarning.toFixed(2), "€")} ---> ${getAmountHtml(percentageIncrease, "%")}</div>
+    <div class="col-xs-5"><b>[Total]</b> Wallet: ${getAmountHtml(totalWallet.toFixed(2), "€")} - Earned: ${getAmountHtml(totalEarning.toFixed(2), "€")}</div>
     <div class="col-xs-6"></div>
 </div>`);
                 $(`#${data.id}`).html(getFormattedEntry(`https://files.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`,
@@ -145,10 +144,12 @@
             }
 
             function getFormattedEntry(imgUrl, name, price, wallet, earned, percentageChange7d, percentageChange24h, percentageChange1h) {
+                var percentageEarned = ((earned/wallet)*100).toFixed(2);
+                
                 return `
 <div class="row line-32">
     <div class="col-xs-1"><img height="32px" src="${imgUrl}"></img></div>
-    <div class="col-xs-5"><b>[${name}: ${price}$]</b> Wallet: ${getAmountHtml(wallet, "€")} - Earned: ${getAmountHtml(earned, "€")}</div>
+    <div class="col-xs-5"><b>[${name}: ${price}$]</b> Wallet: ${getAmountHtml(wallet, "€")} - Earned: ${getAmountHtml(earned, "€")} - ${getAmountHtml(percentageEarned, "%")} </div>
     <div class="col-xs-6">(7j: ${getAmountHtml(percentageChange7d, "%")}, 24h: ${getAmountHtml(percentageChange24h, "%")}, 1h: ${getAmountHtml(percentageChange1h, "%")})</div>
 </div>`
             }
