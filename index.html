@@ -37,6 +37,24 @@
             .chart {
                 height: 500px;
             }
+
+            .spinner {
+                width: 25px;
+                height: 25px;
+                margin: 10px auto;
+                background-color: #333;
+                border-radius: 100%;
+                animation: scaleout 1.0s infinite ease-in-out;
+            }
+
+            @keyframes scaleout {
+                0% {
+                    transform: scale(0);
+                } 100% {
+                    transform: scale(1.0);
+                    opacity: 0;
+                }
+            }
         </style>
     </head>
 
@@ -63,16 +81,6 @@
         </div>
 
         <script>
-            // ======
-            // Benoit
-            // index.html?bitcoin={%22id%22:%22bitcoin%22,%22moneyInvested%22:0,%22quantity%22:0}&ethereum={%22id%22:%22ethereum%22,%22moneyInvested%22:1000,%22quantity%22:7.22%20}&ripple={%22id%22:%22ripple%22,%22moneyInvested%22:60,%22quantity%22:280}
-            // ======
-
-            // ======
-            // Nico
-            // index.html?bitcoin={%22id%22:%22bitcoin%22,%22moneyInvested%22:2207,%22quantity%22:0.07594672}&ethereum={%22id%22:%22ethereum%22,%22moneyInvested%22:174.7,%22quantity%22:1.88%20}&ripple={%22id%22:%22ripple%22,%22moneyInvested%22:0.21428571428,%22quantity%22:0}
-            // ======
-
             var totalEarning = 0;
             var totalWallet = 0;
             var totalInvested = 0;
@@ -96,7 +104,11 @@
 
             // build currencies list
             foundCurrencies.forEach(({ id }) => {
-                $('.container .total').before($('<div id="' + id + '">foo</div>'))
+                $('.container .total').before($(`
+                    <div id="${id}">
+                        <div class="row line-32"><div class="spinner"></div></div>
+                    </div>
+                `))
             })
 
             // build tabs
@@ -235,7 +247,7 @@
                         return sParameterName[1] === undefined ? true : sParameterName[1];
                     }
                 }
-            };
+            }
 
         </script>
     </body>
