@@ -81,6 +81,10 @@
         </div>
 
         <script>
+            var defaultOptions = {
+                refreshInterval: 30000
+            }
+            var options = Object.assign(defaultOptions, getOptions())
             var totalEarning = 0;
             var totalWallet = 0;
             var totalInvested = 0;
@@ -139,9 +143,12 @@
             // load first dashboard
             $('.nav-tabs a', '#chart-container').first().trigger('click')
 
-            // Refresh every 30 sec
             updatePersonnalDashboard(...foundCurrencies);
-            var t = setInterval(() => updatePersonnalDashboard(...foundCurrencies), 30000);
+
+            // Refresh every `options.refreshInterval` milisec
+            if (options.refreshInterval > 0) {
+                var t = setInterval(() => updatePersonnalDashboard(...foundCurrencies), options.refreshInterval);
+            }
 
             function updatePersonnalDashboard(...assets) {
                 totalEarning = 0;
@@ -246,6 +253,16 @@
                     if (sParameterName[0] === sParam) {
                         return sParameterName[1] === undefined ? true : sParameterName[1];
                     }
+                }
+            }
+
+            function getOptions()
+            {
+                const stringOptions = getUrlParameter('options')
+                if (stringOptions) {
+                    return JSON.parse(stringOptions)
+                } else {
+                    return {}
                 }
             }
 
