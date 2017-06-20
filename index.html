@@ -81,6 +81,31 @@
         </div>
 
         <script>
+            const currencyToCMCId = {
+                // $('#currencies_wrapper tr').each((i, elem) => {
+                //      console.log(elem.id, $(elem).find('.sparkline').attr('src'))
+                // })
+                'bitcoin': 1, 'ethereum': 1027, 'ripple': 52, 'litecoin': 2, 'ethereum-classic': 1321,
+                'nem': 873, 'dash': 131, 'iota': 1720, 'bitshares': 463, 'stratis': 1343, 'monero': 328,
+                'zcash': 1437, 'golem-network-tokens': 1455, 'siacoin': 1042, 'bytecoin-bcn': 372,
+                'steem': 1230, 'waves': 1274, 'antshares': 1376, 'stellar': 512, 'lisk': 1214,
+                'iconomi': 1408, 'dogecoin': 74, 'bitconnect': 1513, 'augur': 1104, 'factom': 1087,
+                'ardor': 1320, 'gnosis-gno': 1659, 'veritaseum': 1710, 'gamecredits': 576,
+                'digibyte': 109, 'maidsafecoin': 291, 'komodo': 1521, 'digixdao': 1229, 'firstblood': 1403,
+                'decred': 1168, 'basic-attention-token': 1697, 'byteball': 1492, 'nxt': 66, 'tether': 825,
+                'singulardtv': 1409, 'bitcoindark': 467, 'syscoin': 541, 'mobilego': 1715, 'pivx': 1169,
+                'aragon': 1680, 'round': 1461, 'ark': 1586, 'emercoin': 558, 'lykke': 1454, 'asch': 1609,
+                'ubiq': 588, 'storjcoin-x': 549, 'peerplays-ppy': 1719, 'peercoin': 5, 'mcap': 1690,
+                'rlc': 1637, 'mysterium': 1721, 'reddcoin': 118, 'wings': 1500, 'library-credit': 1298,
+                'melon': 1552, 'counterparty': 132, 'synereo': 1125, 'leocoin': 1022, 'quantum-resistant-ledger': 1712,
+                'verge': 693, 'nexus': 789, 'blackcoin': 170, 'bitbay': 723, 'zcoin': 1414, 'gulden': 254,
+                'supernet-unity': 643, 'cofound-it': 1729, 'xaurum': 895, 'vertcoin': 99, 'obits': 1123,
+                'gridcoin': 833, 'namecoin': 3, 'edgeless': 1596, 'omni': 83, 'ybcoin': 95, 'vslice': 1483,
+                'patientory': 1708, 'trust': 1638, 'viacoin': 470, 'potcoin': 122, 'humaniq': 1669,
+                'expanse': 1070, 'burst': 573, 'nav-coin': 377, 'blocknet': 707, 'iocoin': 495,
+                'e-dinar-coin': 1358, 'tokencard': 1660, 'etheroll': 1677, 'guppy': 1616,
+                'skycoin': 1619, 'earthcoin': 85, 'monacoin': 213, 'digitalnote': 405
+            }
             var defaultOptions = {
                 refreshInterval: 30000
             }
@@ -189,7 +214,6 @@
                             Wallet: ${getAmountHtml(totalWallet.toFixed(2), "€")} -&nbsp;
                             Invested: ${getAmountHtml(totalInvested.toFixed(2), "€")} -&nbsp;
                             Earned: ${getAmountHtml(totalEarning.toFixed(2), "€")}  (${getAmountHtml(totalPercentageEarned, "%")})
-
                         </div>
                     </div>
                 `);
@@ -198,6 +222,7 @@
                     getFormattedEntry(
                         `https://files.coinmarketcap.com/static/img/coins/64x64/${data.id}.png`,
                         data.name,
+                        data.id,
                         Number(data.price_eur).toPrecision(5),
                         eurWallet.toFixed(2),
                         eurEarned.toFixed(2),
@@ -208,22 +233,31 @@
                 );
             }
 
-            function getFormattedEntry(imgUrl, name, price, wallet, earned, percentageChange7d, percentageChange24h, percentageChange1h) {
+            function getFormattedEntry(iconUrl, name, id, price, wallet, earned, percentageChange7d, percentageChange24h, percentageChange1h) {
                 var percentageEarned = ((earned/wallet)*100).toFixed(2);
+
+                if (currencyToCMCId[id]) {
+                    var graphUrl = 'https://files.coinmarketcap.com/generated/sparklines/'  + currencyToCMCId[id] + '.png'
+                } else {
+                    var graphUrl = null
+                }
 
                 return `
                     <div class="row line-32">
-                        <div class="col-xs-1"><img height="32px" src="${imgUrl}"></img></div>
+                        <div class="col-xs-1"><img height="32px" src="${iconUrl}"></img></div>
                         <div class="col-xs-5">
                             <b>[${name}: ${price}€]</b>&nbsp;
                             Wallet: ${getAmountHtml(wallet, "€")} -&nbsp;
                             Earned: ${getAmountHtml(earned, "€")} -&nbsp;
                             ${getAmountHtml(percentageEarned, "%")}
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-3">
                             (7j: ${getAmountHtml(percentageChange7d, "%")},&nbsp;
                             24h: ${getAmountHtml(percentageChange24h, "%")},&nbsp;
                             1h: ${getAmountHtml(percentageChange1h, "%")})
+                        </div>
+                        <div class="col-xs-3">
+                            <img src="${graphUrl}" />
                         </div>
                     </div>
                 `
