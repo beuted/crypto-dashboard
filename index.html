@@ -234,7 +234,7 @@
             }
 
             function getFormattedEntry(iconUrl, name, id, price, wallet, earned, percentageChange7d, percentageChange24h, percentageChange1h) {
-                var percentageEarned = ((earned/wallet)*100).toFixed(2);
+                var percentageEarned = ((earned/(wallet-earned))*100).toFixed(2);
 
                 if (currencyToCMCId[id]) {
                     var graphUrl = 'https://files.coinmarketcap.com/generated/sparklines/'  + currencyToCMCId[id] + '.png'
